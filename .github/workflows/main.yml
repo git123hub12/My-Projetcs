@@ -1,0 +1,31 @@
+name: Deploy to AWS Dev Server
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Build Docker Image
+      run: docker build -t myapp .
+
+    - name: Login to AWS
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: your-region
+
+    - name: Deploy to AWS
+      run: |
+        # Replace with your deployment commands
+        echo "Deploying to AWS"
+        # Example deployment command (e.g., SSH to EC2 and pull/restart Docker container)
+        ssh -o StrictHostKeyChecking=no ec2-user@your-ec2-ip "docker pull myapp && docker run -d myapp"
